@@ -1,4 +1,6 @@
-function ez_init(){
+var lastScreenSize="";
+var firstTime=true;
+async function ez_init(){
     // inetializers
     var navBarHeight=$('.ez-nav-bar').css("height");
     var footerHeight=$('.ez-footer').css("height");
@@ -13,23 +15,6 @@ function ez_init(){
     $('.links-part').append('<button class="nav-button" clicked="false"></button>');
     $('.nav-button').append(navButtonIcon);
     $('.links-part').append(links);
-
-    // HTML programming:
-    // loop
-
-    // var loops=$('.loop');
-    // for (var c1=0;c1<loops.length;c1++){
-    //     var loopContents=loops.eq(c1).html();
-    //     loops.eq(c1).empty();
-    //     var min=parseInt(loops.eq(c1).attr('min'));
-    //     var max=parseInt(loops.eq(c1).attr('max'));
-    //     var inc=parseInt(loops.eq(c1).attr('inc'));
-    //     var loopVar="{-"+loops.eq(c1).attr('var')+"-}";
-    //     while(min<=max){
-    //         loops.eq(c1).append(loopContents.replaceAll(loopVar,min));
-    //         min+=inc;
-    //     }
-    // }
 
 
     // flex bases and orders and css
@@ -107,10 +92,11 @@ function ez_init(){
     }
     var navButton_MQ = window.matchMedia("(max-width: "+navButtonThreshold+"px)");
     navbarButtonListenerAction(navButton_MQ);
-    navButton_MQ.addEventListener("change", () => {
-        navbarButtonListenerAction(navButton_MQ);
-    });
-
+    if(firstTime){
+        navButton_MQ.addEventListener("change", () => {
+            navbarButtonListenerAction(navButton_MQ);
+        });
+    }
 
     // flex bases and orders listeners with the css listener and content holder height calculation and it's listener:
 
@@ -127,7 +113,7 @@ function ez_init(){
                 }
             }
         }
-        $('.content-holder').css("height",$(".content-size-calculator").height());
+        // $('.content-holder').css("height",$(".content-size-calculator").height());
     }
 
     function setOrders(screens2Check){
@@ -143,7 +129,7 @@ function ez_init(){
                 }
             }
         }
-        $('.content-holder').css("height",$(".content-size-calculator").height());
+        // $('.content-holder').css("height",$(".content-size-calculator").height());
     }
 
 
@@ -163,7 +149,7 @@ function ez_init(){
                 }
             }
         }
-        $('.content-holder').css("height",$(".content-size-calculator").height());
+        // $('.content-holder').css("height",$(".content-size-calculator").height());
     }
 
 
@@ -189,80 +175,75 @@ function ez_init(){
         $(".content-holder").append(contentHolderChildren);
     }
 
-    setContentHolderHeight();
-    window.addEventListener("resize", () => {
-        setContentHolderHeight();
-    });
-
 
     var smScreens = window.matchMedia("(max-width:768px)");
+    var mdScreens = window.matchMedia("(max-width:992px) and (min-width:769px)");
+    var lgScreens = window.matchMedia("(max-width:1200px) and (min-width:993px)");
+    var xlScreens = window.matchMedia("(min-width:1201px)");
+
     if (smScreens.matches) {
         var screens=['sm'];
         setBases(screens);
         setOrders(screens);
         setCss(screens);
-    }
-    smScreens.addEventListener("change", () => {
-        if (smScreens.matches) {
-            var screens=['sm'];
-            setBases(screens);
-            setOrders(screens);
-            setCss(screens);
-        }
-    });
-
-
-    var mdScreens = window.matchMedia("(max-width:992px) and (min-width:769px)");
-    if (mdScreens.matches) {
+        lastScreenSize="sm"
+        setContentHolderHeight();
+    }else if (mdScreens.matches) {
         var screens=['sm','md'];
         setBases(screens);
         setOrders(screens);
         setCss(screens);
-    }
-    mdScreens.addEventListener("change", () => {
-        if (mdScreens.matches) {
-            var screens=['sm','md'];
-            setBases(screens);
-            setOrders(screens);
-            setCss(screens);
-        }
-    });
-
-
-    var lgScreens = window.matchMedia("(max-width:1200px) and (min-width:993px)");
-    if (lgScreens.matches) {
+        lastScreenSize="md"
+        setContentHolderHeight();
+    }else if (lgScreens.matches) {
         var screens=['sm','md','lg'];
         setBases(screens);
         setOrders(screens);
         setCss(screens);
-    }
-    lgScreens.addEventListener("change", () => {
-        if (lgScreens.matches) {
-            var screens=['sm','md','lg'];
-            setBases(screens);
-            setOrders(screens);
-            setCss(screens);
-        }
-    });
-
-
-    var xlScreens = window.matchMedia("(min-width:1201px)");
-    if (xlScreens.matches) {
+        lastScreenSize="lg"
+        setContentHolderHeight();
+    }else if (xlScreens.matches) {
         var screens=['sm','md','lg','xl'];
         setBases(screens);
         setOrders(screens);
         setCss(screens);
+        lastScreenSize="xl"
+        setContentHolderHeight();
     }
-    xlScreens.addEventListener("change", () => {
-        if (xlScreens.matches) {
-            var screens=['sm','md','lg','xl'];
-            setBases(screens);
-            setOrders(screens);
-            setCss(screens);
-        }
-    });
 
-    setContentHolderHeight();
+    if(firstTime){
+        window.addEventListener("resize", () => {
+            if (smScreens.matches && lastScreenSize!="sm") {
+                var screens=['sm'];
+                setBases(screens);
+                setOrders(screens);
+                setCss(screens);
+                lastScreenSize="sm"
+                setContentHolderHeight();
+            }else if (mdScreens.matches && lastScreenSize!="md") {
+                var screens=['sm','md'];
+                setBases(screens);
+                setOrders(screens);
+                setCss(screens);
+                lastScreenSize="md"
+                setContentHolderHeight();
+            }else if (lgScreens.matches && lastScreenSize!="lg") {
+                var screens=['sm','md','lg'];
+                setBases(screens);
+                setOrders(screens);
+                setCss(screens);
+                lastScreenSize="lg"
+                setContentHolderHeight();
+            }else if (xlScreens.matches && lastScreenSize!="xl") {
+                var screens=['sm','md','lg','xl'];
+                setBases(screens);
+                setOrders(screens);
+                setCss(screens);
+                lastScreenSize="xl"
+                setContentHolderHeight();
+            }
+        });
+    }
 
     //aos animations
 
@@ -356,7 +337,7 @@ function ez_init(){
         }
     
     });
-    
+    firstTime=false;
 }
 
 
@@ -383,5 +364,23 @@ $('.ez-nav-bar').on('click tap touch','.nav-button',function() {
     }
 })
 
-
 ez_init();
+
+var mutationSwitch=true;
+
+MutationObserver = window.MutationObserver ;
+
+var observer = new MutationObserver(function(mutations, observer) {
+    if(mutationSwitch){
+        mutationSwitch=false;
+        ez_init();
+    }else{
+        mutationSwitch=true;
+    }
+});
+
+observer.observe(document, {
+  subtree: true,
+  childList: true,
+});
+
